@@ -24,10 +24,10 @@ namespace DB.WebApi.Controllers
                     Nome = "Fábio",
                     Sobrenome = "Jesus da Silva Mattes",
                     DataNascimento = new DateTime(1982, 07, 29),
-                    Cpf = "046.986.919-40",
+                    Cpf = "123.456.789-0",
                     DataCadastro = DateTime.Now,
                     Email = "fabiomattes2007@gmail.com",
-                    Senha = "Senh@123",
+                    Senha = "123456789",
                     Ativo = true
                 }
             });
