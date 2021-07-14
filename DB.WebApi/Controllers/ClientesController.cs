@@ -77,9 +77,28 @@ namespace DB.WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await clienteManager.DeleteClienteAsync(id);
+            var retorno = await clienteManager.DeleteClienteAsync(id);
 
-            return NoContent();
+            if (retorno.resultado)
+            {
+                var sucesso = new
+                {
+                    status = 204,
+                    message = retorno.message
+                };
+
+                return Ok(sucesso);
+            }
+            else
+            {
+                var falha = new
+                {
+                    status = 404,
+                    message = retorno.message
+                };
+
+                return NotFound(falha);
+            }
         }
     }
 }

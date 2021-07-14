@@ -12,6 +12,6 @@ namespace DB.Manager.Interfaces
         Task<IEnumerable<Cliente>> GetClientesAsync();
         Task<Cliente> AddClienteAsync(Cliente cliente);
         Task<Cliente> UpdateClienteAsync(Cliente cliente);
-        Task DeleteClienteAsync(int id);
+        Task<(bool resultado, string message)> DeleteClienteAsync(int id);
     }
 }

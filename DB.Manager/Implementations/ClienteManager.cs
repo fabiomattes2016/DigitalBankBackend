@@ -37,9 +37,9 @@ namespace DB.Manager.Implementations
             return await clienteRepository.UpdateClienteAsync(cliente);
         }
 
-        public async Task DeleteClienteAsync(int id)
+        public async Task<(bool resultado, string message)> DeleteClienteAsync(int id)
         {
-            await clienteRepository.DeleteClienteAsync(id);
+            return await clienteRepository.DeleteClienteAsync(id);
         }
     }
 }

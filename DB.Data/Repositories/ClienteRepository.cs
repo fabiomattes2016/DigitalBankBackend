@@ -52,12 +52,20 @@ namespace DB.Data.Repositories
             return clienteConsultado;
         }
 
-        public async Task DeleteClienteAsync(int id)
+        public async Task<(bool resultado, string message)> DeleteClienteAsync(int id)
         {
+
             var clienteConsultado = await digitalBankContext.Clientes.FindAsync(id);
 
-            digitalBankContext.Remove(clienteConsultado);
-            await digitalBankContext.SaveChangesAsync();
+            if (clienteConsultado != null)
+            {
+                digitalBankContext.Remove(clienteConsultado);
+                await digitalBankContext.SaveChangesAsync();
+
+                return (true, "Cliente excluído com sucesso");
+            }
+
+            return (false, "Cliente não encontrado");
         }
     }
 }
