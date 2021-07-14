@@ -1,11 +1,10 @@
 ﻿using DB.Core.Domain;
+using DB.Manager.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DB.WebApi.Controllers
 {
@@ -13,45 +12,74 @@ namespace DB.WebApi.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Get()
+        private readonly IClienteManager clienteManager;
+
+        public ClientesController(IClienteManager clienteManager)
         {
-            return Ok(new List<Cliente>()
-            {
-                new Cliente
-                {
-                    Id = 1,
-                    Nome = "Fábio",
-                    Sobrenome = "Jesus da Silva Mattes",
-                    DataNascimento = new DateTime(1982, 07, 29),
-                    Cpf = "123.456.789-0",
-                    DataCadastro = DateTime.Now,
-                    Email = "fabiomattes2007@gmail.com",
-                    Senha = "123456789",
-                    Ativo = true
-                }
-            });
+            this.clienteManager = clienteManager;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await clienteManager.GetClientesAsync());
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var cliente = await clienteManager.GetClienteAsync(id);
+
+            if(cliente != null)
+            {
+                return Ok(cliente);
+            }
+            else
+            {
+                var message = new
+                {
+                    Status = 404,
+                    Mensagem = "Cliente não encontrado"
+                };
+
+                return NotFound(message);
+            }
         }
 
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(Cliente cliente)
         {
+            var clienteInserido = await clienteManager.AddClienteAsync(cliente);
+            return CreatedAtAction(nameof(Get), new { id = cliente.Id }, cliente);
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<IActionResult> Put(Cliente cliente)
         {
+            var clienteAtualizado = await clienteManager.UpdateClienteAsync(cliente);
+
+            if (clienteAtualizado != null)
+            {
+                return Ok(clienteAtualizado);
+            }
+            else
+            {
+                var message = new
+                {
+                    Status = 404,
+                    Mensagem = "Cliente não encontrado"
+                };
+
+                return NotFound(message);
+            }
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            await clienteManager.DeleteClienteAsync(id);
+
+            return NoContent();
         }
     }
 }

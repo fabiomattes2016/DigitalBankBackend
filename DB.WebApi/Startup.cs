@@ -1,4 +1,7 @@
 using DB.Data.Context;
+using DB.Data.Repositories;
+using DB.Manager.Implementations;
+using DB.Manager.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,13 +28,18 @@ namespace DB.WebApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
 
             // DbContext
             services.AddDbContext<DigitalBankContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServer")));
+
+            //Repositories
+            services.AddScoped<IClienteRepository, ClienteRepository>();
+
+            // Implementations
+            services.AddScoped<IClienteManager, ClienteManager>();
 
             // Swagger
             services.AddSwaggerGen(sw =>
@@ -40,7 +48,6 @@ namespace DB.WebApi
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
